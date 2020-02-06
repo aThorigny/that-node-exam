@@ -22,7 +22,9 @@ exports.readAllGames = async (req, res) => {
     try {
         let games;
         if (req.query.isAwardWinner && req.query.isAwardWinner === 'true') {
-            games = await db.Game.find(req.query).select("+name +editor +releaseDate -stock -_id -__v -isAwardWinner -categories").sort('-releaseDate');
+            games = await db.Game.find(req.query)
+                .select("+name +editor +releaseDate -stock -_id -__v -isAwardWinner -categories")
+                .sort('-releaseDate');
         } else {
             games = await db.Game.find(req.query);
         }
@@ -52,23 +54,6 @@ exports.readOneGame = async (req, res) => {
             .status(400)
             .json({
                 message: `Error while retrieving game at id ${req.params.id}`,
-                error: err,
-            });
-    }
-};
-
-exports.readFilteredGames = async (req, res) => {
-    try {
-        let games = await db.Game.find(req.query).select({ "name": 1, "editor": 1, "releaseDate": 1, "stock": 0, "_id": 0, "__v": 0, "isAwardWinner": 0, "categories": 0});
-        return res
-            .status(201)
-            .json(games);
-    } catch (err) {
-        console.log(`Handler readFilteredGames error: ${err}`);
-        return res
-            .status(400)
-            .json({
-                message: 'Error while retrieving filtered games',
                 error: err,
             });
     }
